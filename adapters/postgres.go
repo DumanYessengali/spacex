@@ -7,10 +7,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	usersTable = "users"
-)
-
 type Config struct {
 	Host     string
 	Port     string
@@ -20,24 +16,9 @@ type Config struct {
 	SSLMode  string
 }
 
-//func NewPostgresDB(cfg Config) (*gorm.DB, error) {
-//	db, err := gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
-//		cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.SSLMode))
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	err = db.Ping()
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return db, nil
-//}
-
 func NewPostgresDB(cfg Config) (*gorm.DB, error) {
 	var err error
-	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.SSLMode, cfg.Password)
+	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s password=%s", cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.SSLMode, cfg.Password)
 	db, err := gorm.Open("postgres", DBURL)
 	if err != nil {
 		return nil, err

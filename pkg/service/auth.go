@@ -1,26 +1,35 @@
 package service
 
 import (
+	"crypto/sha1"
 	"errors"
 	"fmt"
 	"garyshker"
 	"garyshker/pkg/repository"
+	"github.com/badoux/checkmail"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
+)
+
+const (
+	salt = "ztxciubnimdwefojrsih"
 )
 
 type AuthService struct {
 	repos repository.Authorization
 }
 
-var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-
 func NewAuthService(repos repository.Authorization) *AuthService {
 	return &AuthService{repos: repos}
+}
+func generatePasswordHash(password string) string {
+	hash := sha1.New()
+	hash.Write([]byte(password))
+
+	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
 
 func (a *AuthService) CreateUser(user *garyshker.User) (uint64, error) {
@@ -35,12 +44,22 @@ func (a *AuthService) CreateUser(user *garyshker.User) (uint64, error) {
 	if len(user.Password) < 4 {
 		return 0, errors.New("INITIALIZING_PASSWORD_ERROR")
 	}
-
+	user.Password = generatePasswordHash(user.Password)
 	return a.repos.CreateUser(user)
 }
-
+func ValidateEmail(email string) bool {
+	if email == "" {
+		return false
+	}
+	if email != "" {
+		if err := checkmail.ValidateFormat(email); err != nil {
+			return false
+		}
+	}
+	return true
+}
 func (a *AuthService) GetUser(usernameOrEmail, password string) (*garyshker.User, error) {
-	return a.repos.GetUser(usernameOrEmail, password, isEmailValid(usernameOrEmail))
+	return a.repos.GetUser(usernameOrEmail, generatePasswordHash(password), ValidateEmail(usernameOrEmail))
 }
 
 func (a *AuthService) FetchAuth(authD *garyshker.AuthDetails) (*garyshker.Auth, error) {
@@ -55,12 +74,6 @@ func (a *AuthService) CreateAuth(userId uint64) (*garyshker.Auth, error) {
 	return a.repos.CreateAuth(userId)
 }
 
-func isEmailValid(e string) bool {
-	if len(e) < 2 && len(e) > 254 {
-		return false
-	}
-	return emailRegex.MatchString(e)
-}
 func CreateToken(authD garyshker.AuthDetails) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true

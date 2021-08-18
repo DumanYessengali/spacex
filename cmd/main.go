@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"garyshker"
 	"garyshker/adapters"
 	"garyshker/pkg/handler"
@@ -23,7 +24,7 @@ func init() {
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	config := adapters.ParseConfig()
-
+	fmt.Println(os.Getenv("DB_PASS"))
 	db, err := adapters.NewPostgresDB(adapters.Config{
 		Host:     config.DataBaseHost,
 		Port:     config.DataBasePort,

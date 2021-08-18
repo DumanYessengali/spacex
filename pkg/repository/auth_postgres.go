@@ -32,9 +32,9 @@ func (a *AuthPostgres) GetUser(usernameOrEmail, password string, isEmail bool) (
 	user := &garyshker.User{}
 	var err error
 	if isEmail {
-		err = a.db.Debug().Where("email = ? AND password_hash = ?", usernameOrEmail, password).Take(&user).Error
+		err = a.db.Debug().Where("email = ? AND password = ?", usernameOrEmail, password).Take(&user).Error
 	} else {
-		err = a.db.Debug().Where("username = ? AND password_hash = ?", usernameOrEmail, password).Take(&user).Error
+		err = a.db.Debug().Where("username = ? AND password = ?", usernameOrEmail, password).Take(&user).Error
 	}
 	if err != nil {
 		return nil, err
