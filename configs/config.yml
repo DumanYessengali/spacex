@@ -1,0 +1,6 @@
+port: "8888"
+DataBaseHost: "localhost"
+DataBasePort: "5432"
+DataBaseUsername: "postgres"
+DataBaseDbname: "graphQLDB"
+DataBaseSslmode: "disable"
