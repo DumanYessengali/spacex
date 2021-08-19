@@ -21,6 +21,7 @@ func (a *AuthPostgres) CreateUser(user *garyshker.User) (uint64, error) {
 		role = "Admin"
 	}
 	user.Role = role
+
 	err := a.db.Debug().Create(&user).Error
 	if err != nil {
 		return 0, err
