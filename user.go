@@ -1,5 +1,7 @@
 package garyshker
 
+import "time"
+
 //type User struct {
 //	Id       uint64 `gorm:"primary_key;auto_increment" json:"-" db:"id"`
 //	Name     string `gorm:"size:255;not null;" json:"name" binding:"required,min=2,max=25"`
@@ -33,4 +35,89 @@ type Auth struct {
 type AuthDetails struct {
 	AuthUuid string
 	UserId   uint64
+}
+
+type UserInformation struct {
+	Id              uint64 `json:"-" db:"id"`
+	UserAvatarImage string `json:"user_avatar_image"`
+	UserCity        string `json:"user_city"`
+	UserAge         int    `json:"user_age"`
+	UserId          uint64 `json:"-" db:"user_id"`
+}
+
+type UserAllInformation struct {
+	UserId          uint64
+	Name            string
+	Username        string
+	Email           string
+	UserAvatarImage string
+	UserCity        string
+	UserAge         int
+}
+
+type Course struct {
+	Id                uint64 `json:"-" db:"id"`
+	CourseName        string `json:"course_name"`
+	CourseDescription string `json:"course_description"`
+}
+
+type UserCourse struct {
+	Id       uint64
+	CourseId uint64
+	UserId   uint64
+}
+
+type VideoPost struct {
+	Id            uint64        `json:"-" db:"id"`
+	Title         string        `json:"title"`
+	TitleType     PostTitleType `json:"title_type"`
+	VideoDuration int           `json:"video_duration"`
+	Description   string        `json:"description"`
+	VideoUrl      string        `json:"video_url"`
+	Created       time.Time     `json:"-" db:"created"`
+	Updated       time.Time     `json:"-" db:"updated"`
+}
+
+type ArticlePost struct {
+	Id                         uint64        `json:"-" db:"id"`
+	Title                      string        `json:"title"`
+	TitleType                  PostTitleType `json:"title_type"`
+	Duration                   int           `json:"duration"`
+	AuthorInformationParagraph string        `json:"author_information_paragraph"`
+	ParagraphName              string        `json:"paragraph_name"`
+	Description                string        `json:"description"`
+	AuthorName                 string        `json:"author_name"`
+	AuthorPosition             string        `json:"author_position"`
+	Created                    time.Time     `json:"-" db:"created"`
+	Updated                    time.Time     `json:"-" db:"updated"`
+}
+
+type PostConnection struct {
+	Id       uint64
+	PostId   uint64
+	PostType PostType
+}
+
+type PostType string
+
+const (
+	VideoPosts   PostType = "video"
+	ArticlePosts PostType = "article"
+)
+
+type PostTitleType string
+
+const (
+	EcoPhilosophyPost     PostTitleType = "Экофилософия"
+	FinancialLiteracyPost PostTitleType = "Фин.грамотность"
+	MentalHealthPost      PostTitleType = "Ментальное здоровье"
+	CreationPost          PostTitleType = "Творчество"
+	SexEducationPost      PostTitleType = "Половое воспитание"
+	CulturePost           PostTitleType = "Культура"
+)
+
+type UserSavedPost struct {
+	Id               uint64
+	PostConnectionId uint64
+	UserId           uint64
 }

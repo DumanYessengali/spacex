@@ -25,6 +25,7 @@ type AuthService struct {
 func NewAuthService(repos repository.Authorization) *AuthService {
 	return &AuthService{repos: repos}
 }
+
 func generatePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))

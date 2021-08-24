@@ -14,12 +14,13 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := h.services.Authorization.CreateUser(&u)
+	id, err := h.services.Authorization.CreateUser(&u)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusCreated, user)
+
+	c.JSON(http.StatusCreated, id)
 }
 
 type singInInput struct {
@@ -64,11 +65,13 @@ func (h *Handler) LogOut(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, "unauthorized")
 		return
 	}
+
 	delErr := h.services.Authorization.DeleteAuth(au)
 	if delErr != nil {
 		log.Println(delErr)
 		c.JSON(http.StatusUnauthorized, "unauthorized")
 		return
 	}
+
 	c.JSON(http.StatusOK, "Successfully logged out")
 }

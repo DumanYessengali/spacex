@@ -26,6 +26,8 @@ func NewPostgresDB(cfg Config) (*gorm.DB, error) {
 	db.Debug().AutoMigrate(
 		&garyshker.Auth{},
 		&garyshker.User{},
+		&garyshker.UserInformation{},
+		&garyshker.Course{},
 	)
 	return db, nil
 }
