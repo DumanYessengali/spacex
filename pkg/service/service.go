@@ -21,6 +21,7 @@ type Users interface {
 	GetUserInfo(userId uint64) (*garyshker.UserInformation, error)
 	GetUser(userId uint64) (*garyshker.User, error)
 	UpdateUser(userAge *int, userAvatarImage, userCity *string, userInfo *garyshker.UserInformation, username, name, email *string, user *garyshker.User) (*garyshker.UserAllInformation, error)
+	GetRole(id uint64) (garyshker.Role, error)
 }
 
 type Courses interface {

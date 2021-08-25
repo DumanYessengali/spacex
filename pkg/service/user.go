@@ -61,5 +61,8 @@ func (u *UserService) UpdateUser(userAge *int, userAvatarImage, userCity *string
 }
 func (u *UserService) GetUser(userId uint64) (*garyshker.User, error) {
 	return u.repos.GetUser(userId)
+}
 
+func (u *UserService) GetRole(id uint64) (garyshker.Role, error) {
+	return u.repos.GetRole(id)
 }

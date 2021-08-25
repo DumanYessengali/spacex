@@ -46,7 +46,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			mySavedPost.DELETE("/:id", h.deleteMySavedPost)
 		}
 
-		admin := api.Group("/admin")
+		admin := api.Group("/admin", h.requireAdmin())
 		{
 			course := admin.Group("/course")
 			{

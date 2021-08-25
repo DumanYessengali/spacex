@@ -17,9 +17,9 @@ func NewAuthPostgres(db *gorm.DB) *AuthPostgres {
 }
 
 func (a *AuthPostgres) CreateUser(user *garyshker.User) (uint64, error) {
-	role := "User"
+	role := garyshker.UserRole
 	if user.Username == "admin" {
-		role = "Admin"
+		role = garyshker.AdminRole
 	}
 	user.Role = role
 	var userInformation garyshker.UserInformation

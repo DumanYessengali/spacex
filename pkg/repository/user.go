@@ -84,3 +84,12 @@ func (u *UserPostgres) GetUser(userId uint64) (*garyshker.User, error) {
 	}
 	return user, nil
 }
+
+func (u *UserPostgres) GetRole(id uint64) (garyshker.Role, error) {
+	user := &garyshker.User{}
+	err := u.db.Debug().Where("id = $1", id).Take(&user).Error
+	if err != nil {
+		return "", err
+	}
+	return user.Role, nil
+}
