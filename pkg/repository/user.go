@@ -15,11 +15,11 @@ func NewUserPostgres(db *gorm.DB) *UserPostgres {
 func (u *UserPostgres) GetUserByUserId(userId uint64) (*garyshker.UserAllInformation, error) {
 	user := &garyshker.User{}
 	userInfo := &garyshker.UserInformation{}
-	err := u.db.Debug().Where("id = $1", userId).Take(&user).Error
+	err := u.db.Debug().Where("id = ?", userId).Take(&user).Error
 	if err != nil {
 		return nil, err
 	}
-	err = u.db.Debug().Where("user_id = $1", userId).Take(&userInfo).Error
+	err = u.db.Debug().Where("user_id = ?", userId).Take(&userInfo).Error
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (u *UserPostgres) UpdateUser(userInfo *garyshker.UserInformation, user *gar
 
 func (u *UserPostgres) GetUserInfo(userId uint64) (*garyshker.UserInformation, error) {
 	userInfo := &garyshker.UserInformation{}
-	err := u.db.Debug().Where("user_id = $1", userId).Take(&userInfo).Error
+	err := u.db.Debug().Where("user_id = ?", userId).Take(&userInfo).Error
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (u *UserPostgres) GetUserInfo(userId uint64) (*garyshker.UserInformation, e
 
 func (u *UserPostgres) GetUser(userId uint64) (*garyshker.User, error) {
 	user := &garyshker.User{}
-	err := u.db.Debug().Where("id = $1", userId).Take(&user).Error
+	err := u.db.Debug().Where("id = ?", userId).Take(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (u *UserPostgres) GetUser(userId uint64) (*garyshker.User, error) {
 
 func (u *UserPostgres) GetRole(id uint64) (garyshker.Role, error) {
 	user := &garyshker.User{}
-	err := u.db.Debug().Where("id = $1", id).Take(&user).Error
+	err := u.db.Debug().Where("id = ?", id).Take(&user).Error
 	if err != nil {
 		return "", err
 	}

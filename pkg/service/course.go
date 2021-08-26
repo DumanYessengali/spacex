@@ -43,6 +43,10 @@ func (c *CourseService) UpdateCourse(courseName, courseDescription *string, cour
 	return c.repos.UpdateCourse(course)
 }
 
+func (c *CourseService) UserCourseVerify(courseId int, userId uint64) (bool, error) {
+	return c.repos.UserCourseVerify(courseId, userId)
+}
+
 func (c *CourseService) EnrollCourse(courseId int, userId uint64) error {
 	return c.repos.EnrollCourse(courseId, userId)
 }

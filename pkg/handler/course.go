@@ -43,11 +43,13 @@ func (h *Handler) getAllMyCourse(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, "unauthorized")
 		return
 	}
+
 	courses, err := h.services.Courses.GetAllMyCourse(foundAuth.UserID)
 	if err != nil {
 		newErrorResponse(c, http.StatusNotFound, err.Error())
 		return
 	}
+
 	c.JSON(http.StatusOK, courses)
 }
 
@@ -148,13 +150,23 @@ func (h *Handler) enrollCourse(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Courses.EnrollCourse(courseId, foundAuth.UserID)
+	checkUserInCourse, err := h.services.Courses.UserCourseVerify(courseId, foundAuth.UserID)
 	if err != nil {
 		newErrorResponse(c, http.StatusNotFound, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, "You are successfully joined to the course "+course.CourseName)
+	if checkUserInCourse {
+		c.JSON(http.StatusOK, "You are already studying in this course "+course.CourseName)
+	} else {
+		err = h.services.Courses.EnrollCourse(courseId, foundAuth.UserID)
+		if err != nil {
+			newErrorResponse(c, http.StatusNotFound, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, "You are successfully joined to the course "+course.CourseName)
+	}
 }
 
 func (h *Handler) deleteMyCourse(c *gin.Context) {

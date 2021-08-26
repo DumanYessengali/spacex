@@ -25,7 +25,7 @@ func (c *CoursePostgres) GetAllCourse() (*[]garyshker.Course, error) {
 
 func (c *CoursePostgres) GetCourseById(courseId int) (*garyshker.Course, error) {
 	course := &garyshker.Course{}
-	err := c.db.Debug().Where("id = $1", courseId).Take(&course).Error
+	err := c.db.Debug().Where("id = ?", courseId).Take(&course).Error
 	if err != nil {
 		return nil, err
 	}
@@ -53,6 +53,18 @@ func (c *CoursePostgres) UpdateCourse(course *garyshker.Course) (*garyshker.Cour
 	return course, nil
 }
 
+var result struct {
+	Found bool
+}
+
+func (c *CoursePostgres) UserCourseVerify(courseId int, userId uint64) (bool, error) {
+	err := c.db.Raw("SELECT EXISTS(SELECT 1 FROM user_courses WHERE course_id = ? and user_id = ?) AS found", courseId, userId).Scan(&result).Error
+	if err != nil {
+		return false, err
+	}
+	return result.Found, nil
+}
+
 func (c *CoursePostgres) EnrollCourse(courseId int, userId uint64) error {
 	userCourse := &garyshker.UserCourse{}
 	userCourse.CourseId = uint64(courseId)
@@ -78,7 +90,7 @@ func (c *CoursePostgres) GetAllMyCourse(userId uint64) (*[]garyshker.Course, err
 
 func (c *CoursePostgres) DeleteMyCourse(courseId int, userId uint64) error {
 	userCourse := &garyshker.UserCourse{}
-	err := c.db.Debug().Where("course_id = $1 and user_id = $2", courseId, userId).Delete(&userCourse).Error
+	err := c.db.Debug().Where("course_id = ? and user_id = ?", courseId, userId).Delete(&userCourse).Error
 	if err != nil {
 		return err
 	}

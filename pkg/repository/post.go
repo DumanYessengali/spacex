@@ -36,7 +36,7 @@ func (p *PostPostgres) GetAllPost() (*[]garyshker.VideoPost, *[]garyshker.Articl
 			}
 			videoPosts = append(videoPosts, *vPosts)
 		} else {
-			err = p.db.Debug().Where("id = $1", post.PostId).Take(&aPosts).Error
+			err = p.db.Debug().Where("id = ?", post.PostId).Take(&aPosts).Error
 			if err != nil {
 				return nil, nil, err
 			}
@@ -51,7 +51,7 @@ func (p *PostPostgres) GetPostById(postId int) (interface{}, *garyshker.PostConn
 	articlePosts := &garyshker.ArticlePost{}
 	post := &garyshker.PostConnection{}
 
-	err := p.db.Debug().Table("post_connections").Select("*").Where("id = $1", postId).Scan(&post).Error
+	err := p.db.Debug().Table("post_connections").Select("*").Where("id = ?", postId).Scan(&post).Error
 	if err != nil {
 		return nil, nil, err
 	}
@@ -77,7 +77,7 @@ func (p *PostPostgres) GetPostById(postId int) (interface{}, *garyshker.PostConn
 
 func (p *PostPostgres) GetVideoPostById(id uint64) (*garyshker.VideoPost, error) {
 	videoPost := &garyshker.VideoPost{}
-	err := p.db.Debug().Where("id = $1", id).Take(&videoPost).Error
+	err := p.db.Debug().Where("id = ?", id).Take(&videoPost).Error
 	if err != nil {
 		return nil, err
 	}
@@ -86,11 +86,20 @@ func (p *PostPostgres) GetVideoPostById(id uint64) (*garyshker.VideoPost, error)
 
 func (p *PostPostgres) GetArticlePostById(id uint64) (*garyshker.ArticlePost, error) {
 	articlePost := &garyshker.ArticlePost{}
-	err := p.db.Debug().Where("id = $1", id).Take(&articlePost).Error
+	err := p.db.Debug().Where("id = ?", id).Take(&articlePost).Error
 	if err != nil {
 		return nil, err
 	}
 	return articlePost, nil
+}
+
+func (p *PostPostgres) UserPostVerify(post *garyshker.PostConnection, userId uint64) (bool, error) {
+	err := p.db.Raw("SELECT EXISTS(SELECT 1 FROM user_saved_posts WHERE post_connection_id = ? and user_id = ?) AS found", post.Id, userId).Scan(&result).Error
+	if err != nil {
+		return false, err
+	}
+
+	return result.Found, nil
 }
 
 func (p *PostPostgres) EnrollPost(post *garyshker.PostConnection, userId uint64) error {
@@ -102,6 +111,7 @@ func (p *PostPostgres) EnrollPost(post *garyshker.PostConnection, userId uint64)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -120,13 +130,13 @@ func (p *PostPostgres) GetAllMySavedPosts(userId uint64) (*[]garyshker.VideoPost
 		post := &garyshker.PostConnection{}
 		err = rows.Scan(&post.Id, &post.PostId, &post.PostType)
 		if post.PostType == garyshker.VideoPosts {
-			err = p.db.Debug().Where("id = $1", post.PostId).Take(&vPosts).Error
+			err = p.db.Debug().Where("id = ?", post.PostId).Take(&vPosts).Error
 			if err != nil {
 				return nil, nil, err
 			}
 			videoPosts = append(videoPosts, *vPosts)
 		} else {
-			err = p.db.Debug().Where("id = $1", post.PostId).Take(&aPosts).Error
+			err = p.db.Debug().Where("id = ?", post.PostId).Take(&aPosts).Error
 			if err != nil {
 				return nil, nil, err
 			}
@@ -173,7 +183,7 @@ func (p *PostPostgres) CreateArticlePost(articlePost *garyshker.ArticlePost) (*g
 
 func (p *PostPostgres) DeleteMySavedPost(postId, userId uint64) error {
 	userSavedPost := &garyshker.UserSavedPost{}
-	err := p.db.Debug().Where("post_connection_id =$1 and user_id = $2", postId, userId).Delete(&userSavedPost).Error
+	err := p.db.Debug().Where("post_connection_id =? and user_id = ?", postId, userId).Delete(&userSavedPost).Error
 	if err != nil {
 		return err
 	}

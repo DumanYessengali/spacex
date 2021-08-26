@@ -29,6 +29,7 @@ type Courses interface {
 	EnrollCourse(courseId int, userId uint64) error
 	GetAllMyCourse(userId uint64) (*[]garyshker.Course, error)
 	DeleteMyCourse(courseId int, userId uint64) error
+	UserCourseVerify(courseId int, userId uint64) (bool, error)
 }
 
 type Posts interface {
@@ -43,6 +44,7 @@ type Posts interface {
 	DeleteMySavedPost(postId, userId uint64) error
 	UpdateVideoPost(videoPost *garyshker.VideoPost) (*garyshker.VideoPost, error)
 	UpdateArticlePost(articlePost *garyshker.ArticlePost) (*garyshker.ArticlePost, error)
+	UserPostVerify(post *garyshker.PostConnection, userId uint64) (bool, error)
 }
 
 type Repository struct {

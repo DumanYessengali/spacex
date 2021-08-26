@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"garyshker"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -69,14 +68,23 @@ func (h *Handler) enrollPost(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid list id param")
 		return
 	}
-	fmt.Println(postType.Id)
-	err = h.services.Posts.EnrollPost(postType, foundAuth.UserID)
+	checkUserInPost, err := h.services.Posts.UserPostVerify(postType, foundAuth.UserID)
 	if err != nil {
 		newErrorResponse(c, http.StatusNotFound, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, "Post Saved")
+	if checkUserInPost {
+		c.JSON(http.StatusOK, "You are already saved this post")
+	} else {
+		err = h.services.Posts.EnrollPost(postType, foundAuth.UserID)
+		if err != nil {
+			newErrorResponse(c, http.StatusNotFound, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, "Post Saved")
+	}
 }
 
 func (h *Handler) getAllMySavedPost(c *gin.Context) {

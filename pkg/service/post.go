@@ -30,6 +30,10 @@ func (p *PostService) GetArticlePostById(id uint64) (*garyshker.ArticlePost, err
 	return p.repos.GetArticlePostById(id)
 }
 
+func (p *PostService) UserPostVerify(post *garyshker.PostConnection, userId uint64) (bool, error) {
+	return p.repos.UserPostVerify(post, userId)
+}
+
 func (p *PostService) EnrollPost(post *garyshker.PostConnection, userId uint64) error {
 	return p.repos.EnrollPost(post, userId)
 }

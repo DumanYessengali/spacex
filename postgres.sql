@@ -42,7 +42,7 @@ create table user_courses
 create table video_posts
 (
     id             serial primary key,
-    title          varchar(255)                           not null,
+    title          varchar(255)                           not null unique,
     title_type     varchar(255)                           not null,
     video_duration int                                    not null,
     description    varchar(255)                           not null,
@@ -54,7 +54,7 @@ create table video_posts
 create table article_posts
 (
     id                           serial primary key,
-    title                        varchar(255)                           not null,
+    title                        varchar(255)                           not null unique,
     title_type                   varchar(255)                           not null,
     duration                     int                                    not null,
     author_information_paragraph varchar(255),

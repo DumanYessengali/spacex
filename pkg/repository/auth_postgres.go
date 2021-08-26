@@ -42,9 +42,9 @@ func (a *AuthPostgres) GetUser(usernameOrEmail, password string, isEmail bool) (
 	user := &garyshker.User{}
 	var err error
 	if isEmail {
-		err = a.db.Debug().Where("email = $1 AND password = $2", usernameOrEmail, password).Take(&user).Error
+		err = a.db.Debug().Where("email = ? AND password = ?", usernameOrEmail, password).Take(&user).Error
 	} else {
-		err = a.db.Debug().Where("username = $1 AND password = $2", usernameOrEmail, password).Take(&user).Error
+		err = a.db.Debug().Where("username = ? AND password = ?", usernameOrEmail, password).Take(&user).Error
 	}
 	if err != nil {
 		return nil, err
@@ -52,21 +52,9 @@ func (a *AuthPostgres) GetUser(usernameOrEmail, password string, isEmail bool) (
 	return user, nil
 }
 
-//func (s *Server) ValidateEmail(email string) error {
-//	if email == "" {
-//		return errors.New("required email")
-//	}
-//	if email != "" {
-//		if err := checkmail.ValidateFormat(email); err != nil {
-//			return errors.New("invalid email")
-//		}
-//	}
-//	return nil
-//}
-
 func (a *AuthPostgres) FetchAuth(authD *garyshker.AuthDetails) (*garyshker.Auth, error) {
 	au := &garyshker.Auth{}
-	err := a.db.Debug().Where("user_id = $1 AND auth_uuid = $2", authD.UserId, authD.AuthUuid).Take(&au).Error
+	err := a.db.Debug().Where("user_id = ? AND auth_uuid = ?", authD.UserId, authD.AuthUuid).Take(&au).Error
 	if err != nil {
 		return nil, err
 	}
